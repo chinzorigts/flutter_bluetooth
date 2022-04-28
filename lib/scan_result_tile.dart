@@ -1,7 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:getwidget/getwidget.dart';
+
+import 'core/constants/colors/colors.dart';
 
 class ScanResultTile extends StatelessWidget{
 
@@ -86,13 +87,14 @@ class ScanResultTile extends StatelessWidget{
     return ExpansionTile(
       title: _buildTitle(context),
       leading: Text(result.rssi.toString()),
-      trailing: ElevatedButton(
+      trailing: GFButton(
         onPressed: (result.advertisementData.connectable) ? onTap : null,
         child: const Text('CONNECT'),
-        style: ElevatedButton.styleFrom(
-          primary: Colors.black,
-          onPrimary: Colors.white,
-        ),
+        type: GFButtonType.outline,
+        color: AppColors.searchButton,
+        textColor: AppColors.searchButton,
+        disabledColor: AppColors.searchButtonDis,
+        disabledTextColor: AppColors.searchButtonDis,
       ),
       children: <Widget>[
         _buildAdvRow(context, 'Complete Local Name', result.advertisementData.localName),
