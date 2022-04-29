@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_bluetooth/screens/terminal_screen.dart';
 import 'package:getwidget/getwidget.dart';
 
 import 'core/constants/colors/colors.dart';
@@ -141,11 +142,11 @@ class CharacteristicTile extends StatelessWidget{
 
   final BluetoothCharacteristic characteristic;
   final List<DescriptorTile> descriptorTiles;
-  final VoidCallback? onReadPressed;
+  /*final VoidCallback? onReadPressed;
   final VoidCallback? onWritePressed;
-  final VoidCallback? onNotificationPressed;
+  final VoidCallback? onNotificationPressed;*/
 
-  const CharacteristicTile({Key? key, required this.characteristic,required this.descriptorTiles, this.onReadPressed, this.onWritePressed, this.onNotificationPressed}) : super(key: key);
+  const CharacteristicTile({Key? key, required this.characteristic,required this.descriptorTiles}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -171,25 +172,30 @@ class CharacteristicTile extends StatelessWidget{
                 subtitle: Text(String.fromCharCodes(value!), style: const TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold)),
                 contentPadding: const EdgeInsets.all(0.0),
               ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                IconButton(
-                    onPressed: onReadPressed,
-                    icon: Icon(Icons.file_download, color: Theme.of(context).iconTheme.color?.withOpacity(0.5))
+                trailing: GFButton(
+                    type: GFButtonType.outline,
+                    text: 'SHOW CONSOLE',
+                    onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => TerminalScreen(characteristic: characteristic),)),
                 ),
-                IconButton
-                  (
-                    onPressed: onWritePressed,
-                    icon: Icon(Icons.file_upload, color: Theme.of(context).iconTheme.color?.withOpacity(0.5))
-                ),
-                IconButton(
-                    onPressed: onNotificationPressed,
-                    icon: Icon(characteristic.isNotifying ? Icons.sync_disabled : Icons.sync, color: Theme.of(context).iconTheme.color?.withOpacity(0.5))
-                ),
-              ],
-            ),
-            children: descriptorTiles,
+/*              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  IconButton(
+                      onPressed: onReadPressed,
+                      icon: Icon(Icons.file_download, color: Theme.of(context).iconTheme.color?.withOpacity(0.5))
+                  ),
+                  IconButton
+                    (
+                      onPressed: onWritePressed,
+                      icon: Icon(Icons.file_upload, color: Theme.of(context).iconTheme.color?.withOpacity(0.5))
+                  ),
+                  IconButton(
+                      onPressed: onNotificationPressed,
+                      icon: Icon(characteristic.isNotifying ? Icons.sync_disabled : Icons.sync, color: Theme.of(context).iconTheme.color?.withOpacity(0.5))
+                  ),
+                ],
+              ),*/
+              children: descriptorTiles,
           );
         }
     );

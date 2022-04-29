@@ -78,6 +78,7 @@ class FindDevicesScreen extends StatelessWidget{
                       if(snapshot.data!.isNotEmpty){
                         return Container(
                             padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                            margin: const EdgeInsets.only(left: 5.0, right: 5.0),
                             decoration: BoxDecoration(
                                 borderRadius: const BorderRadius.all(Radius.circular(20.0)),
                                 border: Border.all(
@@ -89,7 +90,7 @@ class FindDevicesScreen extends StatelessWidget{
                               children: [
                                 const TitleText(captionText: 'CONNECTED DEVICES'),
                                 Column(
-                                  children: snapshot.data!.where((element) => element.type == BluetoothDeviceType.le).map((d) => ListTile(
+                                  children: snapshot.data!.map((d) => ListTile(
                                     title: Text(d.name),
                                     subtitle: Text(d.id.toString()),
                                     trailing: StreamBuilder<BluetoothDeviceState>(
@@ -136,6 +137,7 @@ class FindDevicesScreen extends StatelessWidget{
                   if(snapshot.hasData){
                     if(snapshot.data!.isNotEmpty){
                       return Container(
+                        margin: const EdgeInsets.only(left: 5.0, right: 5.0),
                         padding: const EdgeInsets.only(left: 5.0, right: 5.0),
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.all(Radius.circular(20.0)),
@@ -193,6 +195,7 @@ class FindDevicesScreen extends StatelessWidget{
                   if(snapshot.hasData){
                     if(snapshot.data!.isNotEmpty){
                       return Container(
+                        margin: const EdgeInsets.only(left: 5.0, right: 5.0),
                         padding: const EdgeInsets.only(left: 5.0, right: 5.0),
                         decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(Radius.circular(20.0)),
@@ -300,12 +303,14 @@ class DeviceScreen extends StatelessWidget{
       service: s,
       characteristicTiles: s.characteristics.map((c) => CharacteristicTile(
           characteristic: c,
-          onReadPressed: () async => await c.read(),
+/*          onReadPressed: () async => await c.read(),
           onWritePressed: () async{
             await c.write('[SP,2,]'.codeUnits, withoutResponse: false);
-            c.setNotifyValue(true);
             await c.read();
           },
+          onNotificationPressed: () async{
+            await c.setNotifyValue(!c.isNotifying);
+          },*/
           descriptorTiles: c.descriptors.map((d) => DescriptorTile(
               descriptor: d,
               onReadPressed: () => d.read(),
@@ -399,10 +404,16 @@ class DeviceScreen extends StatelessWidget{
                     builder: (context, snapshot) => IndexedStack(
                       index: snapshot.data! ? 1 : 0,
                       children: <Widget>[
-                        IconButton(
+                        GFButton(
+                          onPressed: () => device.discoverServices(),
+                          type: GFButtonType.outline,
+                          text: 'DISCOVER\nSERVICES',
+                          textColor: Colors.black87,
+                        ),
+                        /*IconButton(
                             onPressed: () => device.discoverServices(),
                             icon: const Icon(Icons.refresh)
-                        ),
+                        ),*/
                         const IconButton(
                             onPressed: null,
                             icon: SizedBox(
