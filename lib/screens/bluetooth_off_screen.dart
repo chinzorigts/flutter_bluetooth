@@ -146,11 +146,12 @@ class _BluetoothOffScreenState extends State<BluetoothOffScreen>{
                             'Bluetooth Adapter is ${widget.state != null ? widget.state.toString().substring(15).toUpperCase() : 'not available'}.',
                             style: AppStyle.textBody1
                         ),
+                        Platform.isAndroid ?
                         GFButton(
-                            onPressed: Platform.isAndroid ? () => FlutterBluePlus.instance.turnOn() : null,
+                            onPressed: () => FlutterBluePlus.instance.turnOn(),
                             type: GFButtonType.outline2x,
-                            child: Text(Platform.isAndroid ? 'TURN ON' : 'NOT AVAILABLE'),
-                        ),
+                            child: const Text('TURN ON'),
+                        ) : const SizedBox(),
                       ],
                     ),
                     const SizedBox(height: 20,),
