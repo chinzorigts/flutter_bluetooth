@@ -25,6 +25,7 @@ dependencies:
   flutter_smart_dialog: ^3.3.9
   line_icons: ^2.0.1
   scrollable_positioned_list: ^0.2.3
+  fluttertoast: ^8.0.9
 
 dev_dependencies:
   flutter_test:

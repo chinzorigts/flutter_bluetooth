@@ -14,5 +14,6 @@ class AppColors{
   static const Color searchButtonDis = Color.fromRGBO(208, 207, 207, 1.0);
   static const Color starCommand = Color.fromRGBO(0, 124, 190, 1.0);
   static const Color consoleBackground = Color.fromRGBO(247, 240, 240, 1.0);
-
+  static const Color toastBackground = Color.fromRGBO(247, 240, 240, 1.0);
+  static const Color indiaGreen = Color.fromRGBO(62, 137, 20, 1.0);
 }

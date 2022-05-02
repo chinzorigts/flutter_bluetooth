@@ -11,14 +11,12 @@ class TerminalListRow extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-          children: <Widget>[
-            Text(dateTime, style: AppStyle.textBody1,),
-            const Padding(padding: EdgeInsets.only(left: 4.0)),
-            Text(content, style: isCommandText ?  AppStyle.textBody7 : AppStyle.textBody5,)
-          ]
-      ),
+    return Row(
+        children: <Widget>[
+          Text(dateTime, style: AppStyle.textBody1,),
+          const Padding(padding: EdgeInsets.only(left: 4.0)),
+          Text(content, style: isCommandText ?  AppStyle.textBody7 : AppStyle.textBody5,)
+        ]
     );
   }
 }

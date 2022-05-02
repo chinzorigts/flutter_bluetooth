@@ -303,6 +303,7 @@ class DeviceScreen extends StatelessWidget{
       service: s,
       characteristicTiles: s.characteristics.map((c) => CharacteristicTile(
           characteristic: c,
+          streamBluetoothDeviceState: device.state,
           descriptorTiles: c.descriptors.map((d) => DescriptorTile(
               descriptor: d,
               onReadPressed: () => d.read(),
@@ -397,15 +398,13 @@ class DeviceScreen extends StatelessWidget{
                       index: snapshot.data! ? 1 : 0,
                       children: <Widget>[
                         GFButton(
-                          onPressed: () => device.discoverServices(),
+                          onPressed: () =>{
+                            device.discoverServices(),
+                          },
                           type: GFButtonType.outline,
                           text: 'DISCOVER\nSERVICES',
                           textColor: Colors.black87,
                         ),
-                        /*IconButton(
-                            onPressed: () => device.discoverServices(),
-                            icon: const Icon(Icons.refresh)
-                        ),*/
                         const IconButton(
                             onPressed: null,
                             icon: SizedBox(
