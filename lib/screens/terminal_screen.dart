@@ -7,6 +7,7 @@ import 'package:flutter_bluetooth/core/constants/styles/styles.dart';
 import 'package:flutter_bluetooth/data/model/command_model.dart';
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class TerminalScreen extends StatefulWidget{
 
@@ -26,16 +27,30 @@ class _TerminalScreenState extends State<TerminalScreen>{
 
   final _textEditingControllerCommand = TextEditingController();
 
+  final itemScrollController = ItemScrollController();
+  final itemPositionsListener = ItemPositionsListener.create();
+  bool reserved = false;
+
   @override
   void initState() {
     super.initState();
+    itemPositionsListener.itemPositions.addListener(() {
+      final indices = itemPositionsListener.itemPositions.value.map((e) => e.index).toList();
+      debugPrint(indices.toString());
+    });
   }
-
 
   @override
   void dispose() {
     super.dispose();
     _textEditingControllerCommand.dispose();
+  }
+
+  Future scrollToItem() async{
+    itemScrollController.scrollTo(
+        index: 20,
+        duration: const Duration(seconds: 2),
+    );
   }
 
   @override
@@ -56,7 +71,18 @@ class _TerminalScreenState extends State<TerminalScreen>{
           children: <Widget>[
             Container(
               margin: const EdgeInsets.only(bottom: 60.0),
-              child: ListView.builder(
+              child:
+                ScrollablePositionedList.builder(
+                    itemCount: listCommandModel.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _buildConsoleListRow(index);
+                    },
+                    itemScrollController: itemScrollController,
+                    itemPositionsListener: itemPositionsListener,
+                    scrollDirection: Axis.vertical,
+                    reverse: reserved,
+                ),
+/*              ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -75,7 +101,7 @@ class _TerminalScreenState extends State<TerminalScreen>{
                       ),
                     );
                   }
-              ),
+              ),*/
             ),
             //BOTTOM WIDGET TEXT FIELD AND SEND BUTTON
             Align(
@@ -123,6 +149,21 @@ class _TerminalScreenState extends State<TerminalScreen>{
           ],
         )
     );
+  }
+
+  _buildConsoleListRow(int index){
+   return Container(
+     padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 10.0, bottom: 10.0),
+     child: Row(
+       children: <Widget>[
+         Text(listCommandModel[index].dateTimeNow.toString(), style: AppStyle.textBody5),
+         const SizedBox(width: 10,),
+         Flexible(
+           child: Text(listCommandModel[index].command.toString(), style: listCommandModel[index].isCommandText ? AppStyle.textBody7 : AppStyle.textBody6, softWrap: true),
+         ),
+       ],
+     ),
+   );
   }
 
   _putCommandData(String command) async {

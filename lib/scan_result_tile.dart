@@ -20,6 +20,7 @@ class ScanResultTile extends StatelessWidget{
         children: <Widget>[
           Text(
             result.device.name,
+            style: TextStyle(color: result.device.name.isNotEmpty && result.device.name.toLowerCase().contains('golfcar') ? AppColors.iris : Colors.black),
             overflow: TextOverflow.ellipsis,
           ),
           Text(

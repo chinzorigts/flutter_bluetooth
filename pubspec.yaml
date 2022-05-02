@@ -24,7 +24,7 @@ dependencies:
   device_info_plus: ^3.2.3
   flutter_smart_dialog: ^3.3.9
   line_icons: ^2.0.1
-
+  scrollable_positioned_list: ^0.2.3
 
 dev_dependencies:
   flutter_test:

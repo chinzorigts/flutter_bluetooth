@@ -70,7 +70,7 @@ class FindDevicesScreen extends StatelessWidget{
             const SizedBox(height: 20.0,),
 
             StreamBuilder<List<BluetoothDevice>>(
-                stream: Stream.periodic(const Duration(seconds: 2)).asyncMap((_) => FlutterBluePlus.instance.connectedDevices),
+                stream: Stream.periodic(const Duration(seconds: 4)).asyncMap((_) => FlutterBluePlus.instance.connectedDevices),
                 initialData: const [],
                 builder: (context, snapshot) {
                   if(snapshot.hasData){
@@ -303,14 +303,6 @@ class DeviceScreen extends StatelessWidget{
       service: s,
       characteristicTiles: s.characteristics.map((c) => CharacteristicTile(
           characteristic: c,
-/*          onReadPressed: () async => await c.read(),
-          onWritePressed: () async{
-            await c.write('[SP,2,]'.codeUnits, withoutResponse: false);
-            await c.read();
-          },
-          onNotificationPressed: () async{
-            await c.setNotifyValue(!c.isNotifying);
-          },*/
           descriptorTiles: c.descriptors.map((d) => DescriptorTile(
               descriptor: d,
               onReadPressed: () => d.read(),
