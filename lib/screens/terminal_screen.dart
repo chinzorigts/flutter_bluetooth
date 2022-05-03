@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:flutter_bluetooth/core/constants/colors/colors.dart';
 import 'package:flutter_bluetooth/core/constants/styles/styles.dart';
 import 'package:flutter_bluetooth/data/model/command_model.dart';
 import 'package:flutter_bluetooth/screens/widgets/app_alert.dart';
@@ -27,6 +26,7 @@ class TerminalScreen extends StatefulWidget{
 
 class _TerminalScreenState extends State<TerminalScreen>{
 
+  late final StreamSubscription<BluetoothDeviceState> streamDeviceState;
   List<CommandModel> listCommandModel = [];
 
   var bluePus = FlutterBluePlus.instance;
@@ -40,6 +40,7 @@ class _TerminalScreenState extends State<TerminalScreen>{
   var lastItemIndex = 0;
   var realItemIndex = 0;
 
+  bool isAutoScroll = true;
   bool disconnected = false;
   bool reserved = false;
 
@@ -47,7 +48,7 @@ class _TerminalScreenState extends State<TerminalScreen>{
   void initState() {
     super.initState();
 
-    widget.deviceState.asBroadcastStream().listen((event) async {
+    streamDeviceState = widget.deviceState.asBroadcastStream().listen((event) async {
       debugPrint('DEVICE STATE ==> $event');
       if(event == BluetoothDeviceState.disconnected){
         disconnected = true;
@@ -70,11 +71,12 @@ class _TerminalScreenState extends State<TerminalScreen>{
     if(_streamListCommand != null){
       await _streamListCommand!.cancel();
     }
+    streamDeviceState.cancel();
     _textEditingControllerCommand.dispose();
   }
 
   Future<void> scrollToItem() async{
-    if(realItemIndex > lastItemIndex){
+    if(isAutoScroll && realItemIndex > lastItemIndex){
       await itemScrollController.scrollTo(
         index: realItemIndex,
         duration: const Duration(milliseconds: 500),
@@ -88,6 +90,23 @@ class _TerminalScreenState extends State<TerminalScreen>{
         appBar: AppBar(
           title: const Text('Terminal'),
           actions: [
+            IconButton(
+                onPressed: () async{
+                  await widget.characteristic.setNotifyValue(!widget.characteristic.isNotifying);
+                  setState(() {});
+                },
+                icon: Icon(widget.characteristic.isNotifying ? LineIcons.stop : LineIcons.play),
+                color: widget.characteristic.isNotifying ? Colors.red : Colors.white,
+            ),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    isAutoScroll =! isAutoScroll;
+                  });
+                },
+                icon: Icon(isAutoScroll ? LineIcons.lock : LineIcons.unlock),
+                color: isAutoScroll ? Colors.red : Colors.white,
+            ),
             IconButton(
                 onPressed: () => _deleteCommandLine(),
                 icon: const Icon(LineIcons.trash,)
@@ -110,8 +129,7 @@ class _TerminalScreenState extends State<TerminalScreen>{
               children: <Widget>[
                 Container(
                   margin: const EdgeInsets.only(bottom: 60.0),
-                  child:
-                  ScrollablePositionedList.builder(
+                  child: ScrollablePositionedList.builder(
                     itemCount: listCommandModel.length,
                     itemBuilder: (BuildContext context, int index) {
                       realItemIndex = index;
@@ -143,16 +161,6 @@ class _TerminalScreenState extends State<TerminalScreen>{
                           ),
                         ),
                         const SizedBox(width: 15,),
-                        FloatingActionButton(
-                          onPressed: () async {
-                            await widget.characteristic.setNotifyValue(!widget.characteristic.isNotifying);
-                            setState(() {});
-                          },
-                          child: Icon(widget.characteristic.isNotifying ? LineIcons.stop : LineIcons.play, color: Colors.white, size: 18,),
-                          backgroundColor: widget.characteristic.isNotifying ? AppColors.error : AppColors.indiaGreen,
-                          elevation: 5,
-                          heroTag: null,
-                        ),
                         FloatingActionButton(
                           onPressed: () async {
                             await _putCommandData(_textEditingControllerCommand.text);
@@ -224,9 +232,9 @@ class _TerminalScreenState extends State<TerminalScreen>{
 
   _deleteCommandLine(){
     if(listCommandModel.isNotEmpty)
-      {
-        listCommandModel.clear();
-      }
+    {
+      listCommandModel.clear();
+    }
     setState(() {});
   }
 }
